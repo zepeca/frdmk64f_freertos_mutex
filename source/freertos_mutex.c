@@ -31,6 +31,9 @@ SemaphoreHandle_t xMutex;
  ******************************************************************************/
 static void write_task_1(void *pvParameters);
 static void write_task_2(void *pvParameters);
+static void write_task_3(void *pvParameters);
+static void write_task_4(void *pvParameters);
+static void write_task_5(void *pvParameters);
 
 /*******************************************************************************
  * Code
@@ -59,6 +62,27 @@ int main(void)
         while (1)
             ;
     }
+    if (xTaskCreate(write_task_3, "WRITE_TASK_3", configMINIMAL_STACK_SIZE + 128, NULL, tskIDLE_PRIORITY + 1, NULL) !=
+        pdPASS)
+    {
+        PRINTF("Task creation failed!.\r\n");
+        while (1)
+            ;
+    }
+    if (xTaskCreate(write_task_4, "WRITE_TASK_4", configMINIMAL_STACK_SIZE + 128, NULL, tskIDLE_PRIORITY + 1, NULL) !=
+        pdPASS)
+    {
+        PRINTF("Task creation failed!.\r\n");
+        while (1)
+            ;
+    }
+    if (xTaskCreate(write_task_5, "WRITE_TASK_5", configMINIMAL_STACK_SIZE + 128, NULL, tskIDLE_PRIORITY + 1, NULL) !=
+        pdPASS)
+    {
+        PRINTF("Task creation failed!.\r\n");
+        while (1)
+            ;
+    }
     /* Start scheduling. */
     vTaskStartScheduler();
     for (;;)
@@ -76,9 +100,14 @@ static void write_task_1(void *pvParameters)
         {
             PRINTF("Failed to take semaphore.\r\n");
         }
-        PRINTF("ABCD |");
-        taskYIELD();
-        PRINTF(" EFGH\r\n");
+
+        for (int i = 0; i < 100; i++)
+        {
+            PRINTF("1");
+            taskYIELD();
+        }
+
+        PRINTF("\r\n");
         xSemaphoreGive(xMutex);
         taskYIELD();
     }
@@ -95,9 +124,86 @@ static void write_task_2(void *pvParameters)
         {
             PRINTF("Failed to take semaphore.\r\n");
         }
-        PRINTF("1234 |");
+
+        for (int i = 0; i < 100; i++)
+        {
+            PRINTF("2");
+            taskYIELD();
+        }
+
+        PRINTF("\r\n");
+        xSemaphoreGive(xMutex);
         taskYIELD();
-        PRINTF(" 5678\r\n");
+    }
+}
+
+/*!
+ * @brief Write Task 3 function
+ */
+static void write_task_3(void *pvParameters)
+{
+    while (1)
+    {
+        if (xSemaphoreTake(xMutex, portMAX_DELAY) != pdTRUE)
+        {
+            PRINTF("Failed to take semaphore.\r\n");
+        }
+
+        for (int i = 0; i < 100; i++)
+        {
+            PRINTF("3");
+            taskYIELD();
+        }
+
+        PRINTF("\r\n");
+        xSemaphoreGive(xMutex);
+        taskYIELD();
+    }
+}
+
+/*!
+ * @brief Write Task 4 function
+ */
+static void write_task_4(void *pvParameters)
+{
+    while (1)
+    {
+        if (xSemaphoreTake(xMutex, portMAX_DELAY) != pdTRUE)
+        {
+            PRINTF("Failed to take semaphore.\r\n");
+        }
+
+        for (int i = 0; i < 100; i++)
+        {
+            PRINTF("4");
+            taskYIELD();
+        }
+
+        PRINTF("\r\n");
+        xSemaphoreGive(xMutex);
+        taskYIELD();
+    }
+}
+
+/*!
+ * @brief Write Task 5 function
+ */
+static void write_task_5(void *pvParameters)
+{
+    while (1)
+    {
+        if (xSemaphoreTake(xMutex, portMAX_DELAY) != pdTRUE)
+        {
+            PRINTF("Failed to take semaphore.\r\n");
+        }
+
+        for (int i = 0; i < 100; i++)
+        {
+            PRINTF("5");
+            taskYIELD();
+        }
+
+        PRINTF("\r\n");
         xSemaphoreGive(xMutex);
         taskYIELD();
     }
